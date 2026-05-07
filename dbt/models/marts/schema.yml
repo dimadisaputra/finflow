@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: mart_monthly_cashflow
+    description: "Monthly cashflow aggregation by source and transaction type"
+    config:
+      materialized: table
+      tags: ['v1']
+    columns:
+      - name: month
+        tests:
+          - not_null
+      - name: transaction_count
+        tests:
+          - not_null
+
+  - name: mart_user_summary
+    description: "Per-user transaction summary"
+    config:
+      materialized: table
+      tags: ['v1']
+    columns:
+      - name: user_id
+        tests:
+          - not_null
+          - unique
+      - name: total_transactions
+        tests:
+          - not_null
+
+  - name: mart_fraud_alerts
+    description: "Fraud alerts from velocity detection — Gold reporting layer"
+    config:
+      materialized: table
+      tags: ['v1']
+    columns:
+      - name: user_id
+        tests:
+          - not_null
+      - name: alert_type
+        tests:
+          - not_null
+      - name: detected_at
+        tests:
+          - not_null

@@ -1,0 +1,80 @@
+# FinFlow Prometheus Alerting Rules
+groups:
+  - name: finflow.ingestion
+    rules:
+      - alert: HighIngestionErrorRate
+        expr: |
+          rate(finflow_ingestion_errors_total[5m])
+          / rate(finflow_ingestion_requests_total[5m])
+          > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High ingestion error rate (> 5%)"
+          description: "{{ $labels.source }} has error rate {{ $value | humanizePercentage }}"
+
+      - alert: IngestionLatencyHigh
+        expr: |
+          histogram_quantile(0.95,
+            rate(finflow_ingestion_duration_seconds_bucket[5m])
+          ) > 2
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Ingestion p95 latency > 2s"
+
+  - name: finflow.streaming
+    rules:
+      - alert: SilverWriterLag
+        expr: |
+          finflow_silver_writer_lag_seconds > 600
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Silver writer is lagging > 10 minutes"
+          description: "Current lag: {{ $value | humanizeDuration }}"
+
+      - alert: FraudDetectionDown
+        expr: |
+          up{job="finflow-fraud-detection"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Fraud detection service is down"
+
+  - name: finflow.infrastructure
+    rules:
+      - alert: RedpandaDiskUsageHigh
+        expr: |
+          (node_filesystem_size_bytes{mountpoint="/var/lib/redpanda"}
+           - node_filesystem_free_bytes{mountpoint="/var/lib/redpanda"})
+          / node_filesystem_size_bytes{mountpoint="/var/lib/redpanda"}
+          > 0.85
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Redpanda disk usage > 85%"
+
+      - alert: MinIODiskUsageHigh
+        expr: |
+          minio_disk_storage_used_bytes / minio_disk_storage_total_bytes > 0.85
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "MinIO disk usage > 85%"
+
+      - alert: IcebergMaintenanceFailure
+        expr: |
+          finflow_iceberg_maintenance_last_success_timestamp
+          < time() - 86400 * 2
+        for: 1h
+        labels:
+          severity: critical
+        annotations:
+          summary: "Iceberg maintenance has not run in > 2 days"

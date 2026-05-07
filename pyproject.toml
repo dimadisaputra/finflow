@@ -41,6 +41,12 @@ dependencies = [
 
     # DuckDB
     "duckdb>=0.10.0",
+
+    # Airflow
+    "apache-airflow>=2.9.1",
+
+    #Pytest
+    "pytest>=8.0.0"
 ]
 
 [tool.uv]

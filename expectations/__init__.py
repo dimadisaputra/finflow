@@ -1,1 +1,1 @@
-"""Great Expectations validation suites for FinFlow."""
+"""Great Expectations v1.x validation suite for Gold fraud alerts."""

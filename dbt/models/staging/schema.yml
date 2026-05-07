@@ -1,0 +1,53 @@
+version: 2
+
+sources:
+  - name: silver
+    description: "Silver layer — Iceberg tables accessed via MinIO S3 API"
+    tables:
+      - name: transactions
+        description: "Normalized transactions from all sources"
+        columns:
+          - name: transaction_id
+            description: "Globally unique transaction identifier"
+            tests:
+              - not_null
+              - unique
+          - name: user_id
+            description: "FPE-tokenized user identifier"
+            tests:
+              - not_null
+          - name: amount
+            description: "Transaction amount"
+            tests:
+              - not_null
+          - name: source
+            description: "Source system identifier"
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['bca', 'mandiri', 'gopay', 'ovo', 'visa']
+
+  - name: gold
+    description: "Gold layer — curated tables for reporting"
+    tables:
+      - name: fraud_alerts
+        description: "Fraud alerts from velocity detection"
+        columns:
+          - name: user_id
+            tests:
+              - not_null
+          - name: alert_type
+            tests:
+              - not_null
+
+models:
+  - name: stg_transactions
+    description: "Staging view over Silver transactions"
+    config:
+      materialized: view
+      tags: ['v1']
+    columns:
+      - name: transaction_id
+        tests:
+          - not_null
+          - unique
