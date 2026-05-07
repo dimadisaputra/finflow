@@ -1,0 +1,14 @@
+finflow:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: '../finflow.duckdb'
+      threads: 4
+    prod:
+      type: duckdb
+      path: '../finflow.duckdb'
+      threads: 4
+      # For MotherDuck in production:
+      # type: duckdb
+      # path: 'md:finflow?motherduck_token={{ env_var("MOTHERDUCK_TOKEN") }}'
