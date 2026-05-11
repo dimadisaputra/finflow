@@ -60,3 +60,6 @@ Thumbs.db
 htmlcov/
 .mypy_cache/
 .ruff_cache/
+
+# Airflow (runtime artifacts only — DAGs are tracked in dags/)
+airflow/

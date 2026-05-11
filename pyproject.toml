@@ -42,8 +42,8 @@ dependencies = [
     # DuckDB
     "duckdb>=0.10.0",
 
-    # Airflow
-    "apache-airflow>=2.9.1",
+    # Airflow (pinned to 2.x — DAGs use 2.x operator imports)
+    "apache-airflow>=2.9.1,<3.0.0",
 
     #Pytest
     "pytest>=8.0.0"

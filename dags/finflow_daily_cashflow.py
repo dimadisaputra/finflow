@@ -13,8 +13,8 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 
 from airflow import DAG
-from airflow.providers.standard.operators.bash import BashOperator
-from airflow.providers.standard.operators.python import PythonOperator
+from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
 
 default_args = {
     "owner": "finflow",
@@ -24,6 +24,12 @@ default_args = {
     "retries": 2,
     "retry_delay": timedelta(minutes=5),
 }
+
+# Environment variables FINFLOW_HOME and DBT_TARGET are injected
+# via docker-compose.yml.  Defaults ensure the DAGs also work when
+# Airflow runs locally (e.g. during development).
+DBT_DIR = "${FINFLOW_HOME:-/opt/finflow}/dbt"
+DBT_TARGET = "${DBT_TARGET:-dev}"
 
 with DAG(
     dag_id="finflow_daily_cashflow",
@@ -38,13 +44,13 @@ with DAG(
     # Step 1: Run dbt transformations
     dbt_run = BashOperator(
         task_id="dbt_run",
-        bash_command="cd /opt/finflow/dbt && dbt run --profiles-dir . --target prod",
+        bash_command=f"cd {DBT_DIR} && dbt run --profiles-dir . --target {DBT_TARGET}",
     )
 
     # Step 2: Run dbt tests
     dbt_test = BashOperator(
         task_id="dbt_test",
-        bash_command="cd /opt/finflow/dbt && dbt test --profiles-dir . --target prod",
+        bash_command=f"cd {DBT_DIR} && dbt test --profiles-dir . --target {DBT_TARGET}",
     )
 
     # Step 3: Run Great Expectations validation

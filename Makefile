@@ -5,7 +5,8 @@
         infra-up infra-down infra-logs \
         simulate ingest-api \
         dbt-run dbt-test dashboard-dev \
-        spark-silver spark-fraud spark-alerts spark-maintenance
+        spark-silver spark-fraud spark-alerts spark-maintenance \
+        airflow-build airflow-init airflow-up airflow-down airflow-logs
 
 # ── Help ─────────────────────────────────────────────────────────
 help: ## Show this help
@@ -105,3 +106,20 @@ register-schemas: ## Export and register JSON schemas to Redpanda
 			-d "{\"schema\": $$(cat -)}"; \
 		echo ""; \
 	done
+
+# ── Airflow ──────────────────────────────────────────────────────
+airflow-build: ## Build Airflow Docker image
+	docker compose build airflow-init airflow-webserver airflow-scheduler
+
+airflow-init: airflow-build ## Initialize Airflow (db migrate + create admin user)
+	docker compose up airflow-init
+
+airflow-up: ## Start Airflow webserver + scheduler
+	docker compose up -d airflow-webserver airflow-scheduler
+	@echo "Airflow UI: http://localhost:8085  (admin / admin)"
+
+airflow-down: ## Stop Airflow services
+	docker compose stop airflow-webserver airflow-scheduler
+
+airflow-logs: ## Tail Airflow logs
+	docker compose logs -f airflow-webserver airflow-scheduler
