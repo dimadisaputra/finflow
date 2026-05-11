@@ -87,10 +87,10 @@ dbt-docs: ## Generate and serve dbt docs
 
 # ── Dashboard ────────────────────────────────────────────────────
 dashboard-dev: ## Start Evidence.dev dashboard (dev mode)
-	cd dashboard && npm install && npm run dev
+	bash -c "cd dashboard && source ~/.nvm/nvm.sh && nvm use && npm install && npm run sources && npm run dev"
 
 dashboard-build: ## Build Evidence.dev dashboard (static HTML)
-	cd dashboard && npm run build
+	bash -c "cd dashboard && source ~/.nvm/nvm.sh && nvm use && npm install && npm run sources && npm run build"
 
 # ── Schema Registry ──────────────────────────────────────────────
 register-schemas: ## Export and register JSON schemas to Redpanda

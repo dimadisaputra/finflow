@@ -14,6 +14,9 @@ from fastapi import Header, HTTPException, Request
 
 logger = logging.getLogger(__name__)
 
+# Valid source names — must match Redpanda topic suffixes.
+VALID_SOURCES: set[str] = {"bca", "mandiri", "gopay", "ovo", "visa"}
+
 
 def _get_api_key(source: str) -> str:
     """Retrieve the expected API key for a given source from environment.
@@ -51,6 +54,12 @@ async def verify_source_token(
         401 if the key is missing or does not match.
     """
     source: str = request.path_params.get("source", "")
+
+    if source not in VALID_SOURCES:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unknown source '{source}'. Valid sources: {sorted(VALID_SOURCES)}",
+        )
 
     expected_key = _get_api_key(source)
     if x_api_key != expected_key:

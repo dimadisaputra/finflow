@@ -14,15 +14,12 @@ from typing import AsyncGenerator
 
 from fastapi import Depends, FastAPI, HTTPException
 
-from ingestion.auth import verify_source_token
+from ingestion.auth import VALID_SOURCES, verify_source_token
 from ingestion.pii import tokenize_pii
 from ingestion.producer import get_producer, start_producer, stop_producer
 from schemas.registry import AnyTransaction
 
 logger = logging.getLogger(__name__)
-
-# Valid source names — must match Redpanda topic suffixes.
-VALID_SOURCES: set[str] = {"bca", "mandiri", "gopay", "ovo", "visa"}
 
 
 @asynccontextmanager

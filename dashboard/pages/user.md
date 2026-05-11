@@ -11,7 +11,7 @@ SELECT
     active_days,
     first_transaction_at,
     last_transaction_at
-FROM mart_user_summary
+FROM finflow.mart_user_summary
 ORDER BY total_amount DESC
 LIMIT 100
 ```
@@ -28,7 +28,7 @@ SELECT
     source_count AS sources_used,
     COUNT(*) AS user_count,
     AVG(total_transactions) AS avg_transactions
-FROM mart_user_summary
+FROM finflow.mart_user_summary
 GROUP BY 1
 ORDER BY 1
 ```

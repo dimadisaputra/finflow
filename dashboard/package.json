@@ -3,13 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "evidence dev",
     "build": "evidence build",
+    "build:strict": "evidence build:strict",
+    "dev": "evidence dev --port 3001 --open /",
+    "test": "evidence build",
+    "sources": "evidence sources",
     "preview": "evidence preview"
   },
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=18.0.0"
+  },
+  "type": "module",
   "dependencies": {
-    "@evidence-dev/evidence": "latest",
-    "@evidence-dev/core-components": "latest",
-    "@evidence-dev/duckdb": "latest"
+    "@evidence-dev/core-components": "^5.4.2",
+    "@evidence-dev/duckdb": "^2.0.1",
+    "@evidence-dev/evidence": "^40.1.8"
+  },
+  "overrides": {
+    "typescript": "~5.7.0",
+    "jsonwebtoken": "9.0.0",
+    "trim@<0.0.3": ">0.0.3",
+    "sqlite3": "5.1.5",
+    "axios": "^1.7.4"
   }
 }

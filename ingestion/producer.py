@@ -37,7 +37,7 @@ async def start_producer() -> None:
     """Start the global Kafka producer.  Called during app startup."""
     global _producer
 
-    bootstrap_servers = os.environ.get("REDPANDA_BROKERS", "localhost:9092")
+    bootstrap_servers = os.environ.get("REDPANDA_BROKERS", "localhost:19092")
 
     _producer = AIOKafkaProducer(
         bootstrap_servers=bootstrap_servers,

@@ -19,9 +19,14 @@ from schemas.v1.ovo import OVOTransaction as OVOV1
 from schemas.v1.visa import VisaTransaction as VisaV1
 from schemas.v2.bca import BCATransaction as BCAV2
 
-# Pydantic v2 discriminated union — dispatches on schema_version field.
-# More specific versions come first.
+# Pydantic v2 discriminated union — dispatches on source and schema_version.
+# We nest the discriminated unions to handle multiple versions of the same source.
+BCATransactions = Annotated[
+    Union[BCAV2, BCAV1],
+    Field(discriminator="schema_version")
+]
+
 AnyTransaction = Annotated[
-    Union[BCAV2, BCAV1, MandiriV1, GoPayV1, OVOV1, VisaV1],
-    Field(discriminator="schema_version"),
+    Union[BCATransactions, MandiriV1, GoPayV1, OVOV1, VisaV1],
+    Field(discriminator="source"),
 ]

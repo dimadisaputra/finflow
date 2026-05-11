@@ -5,6 +5,8 @@ sources:
     description: "Silver layer — Iceberg tables accessed via MinIO S3 API"
     tables:
       - name: transactions
+        meta:
+          external_location: "iceberg_scan('s3a://finflow-silver/transactions')"
         description: "Normalized transactions from all sources"
         columns:
           - name: transaction_id
@@ -31,6 +33,8 @@ sources:
     description: "Gold layer — curated tables for reporting"
     tables:
       - name: fraud_alerts
+        meta:
+          external_location: "iceberg_scan('s3a://finflow-gold/fraud_alerts')"
         description: "Fraud alerts from velocity detection"
         columns:
           - name: user_id

@@ -1,0 +1,4 @@
+name: finflow
+type: duckdb
+options:
+  filename: ../../../finflow.duckdb

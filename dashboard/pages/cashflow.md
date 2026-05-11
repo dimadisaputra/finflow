@@ -7,7 +7,7 @@ SELECT
     transaction_count,
     total_amount,
     avg_amount
-FROM mart_monthly_cashflow
+FROM finflow.mart_monthly_cashflow
 ORDER BY month DESC
 LIMIT 60
 ```

@@ -5,6 +5,19 @@ finflow:
       type: duckdb
       path: '../finflow.duckdb'
       threads: 4
+      extensions:
+        - httpfs
+        - iceberg
+      settings:
+        unsafe_enable_version_guessing: true
+      secrets:
+        - type: s3
+          key_id: "{{ env_var('MINIO_ACCESS_KEY', 'minioadmin') }}"
+          secret: "{{ env_var('MINIO_SECRET_KEY', 'minioadmin') }}"
+          endpoint: "localhost:9000"
+          region: "us-east-1"
+          url_style: "path"
+          use_ssl: false
     prod:
       type: duckdb
       path: '../finflow.duckdb'
@@ -12,3 +25,4 @@ finflow:
       # For MotherDuck in production:
       # type: duckdb
       # path: 'md:finflow?motherduck_token={{ env_var("MOTHERDUCK_TOKEN") }}'
+

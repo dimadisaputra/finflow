@@ -44,6 +44,20 @@ services:
       SCHEMA_REGISTRY_ENABLED: "true"
       SCHEMA_REGISTRY_URLS: http://redpanda:8081
 
+  # Redpanda Topic Initialization
+  redpanda-init:
+    image: docker.redpanda.com/redpandadata/redpanda:v24.1.1
+    container_name: finflow-redpanda-init
+    depends_on:
+      redpanda:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      echo 'Creating Redpanda topics...';
+      rpk topic create finflow.transactions.bca finflow.transactions.mandiri finflow.transactions.gopay finflow.transactions.ovo finflow.transactions.visa finflow.fraud.alerts --brokers redpanda:9092;
+      echo 'All topics created';
+      "
+
   # ── Object Storage ─────────────────────────────────────────────
   minio:
     image: minio/minio:RELEASE.2024-03-15T01-07-19Z
@@ -93,6 +107,7 @@ services:
       CATALOG_WAREHOUSE: s3a://finflow-silver/
       CATALOG_IO__IMPL: org.apache.iceberg.aws.s3.S3FileIO
       CATALOG_S3_ENDPOINT: http://minio:9000
+      CATALOG_S3_PATH__STYLE__ACCESS: "true"
       AWS_ACCESS_KEY_ID: minioadmin
       AWS_SECRET_ACCESS_KEY: minioadmin
       AWS_REGION: us-east-1

@@ -4,11 +4,10 @@ Welcome to FinFlow — your personal finance aggregation and fraud detection das
 
 ```sql overview_stats
 SELECT
-    COUNT(*) AS total_transactions,
-    COUNT(DISTINCT user_id) AS unique_users,
-    SUM(amount) AS total_volume,
-    COUNT(DISTINCT source) AS active_sources
-FROM mart_monthly_cashflow
+    (SELECT SUM(total_transactions) FROM finflow.mart_user_summary) AS total_transactions,
+    (SELECT COUNT(*) FROM finflow.mart_user_summary) AS unique_users,
+    (SELECT SUM(total_amount) FROM finflow.mart_user_summary) AS total_volume,
+    (SELECT COUNT(DISTINCT source) FROM finflow.mart_monthly_cashflow) AS active_sources
 ```
 
 <BigValue

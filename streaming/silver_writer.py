@@ -66,15 +66,38 @@ SILVER_SCHEMA = StructType([
 ])
 
 
+def _is_local_dev() -> bool:
+    """Detect if we are running in local development mode (outside Docker)."""
+    return os.environ.get("FINFLOW_ENV", "local") == "local"
+
+
 def create_spark_session() -> SparkSession:
-    """Create a SparkSession configured for Iceberg + MinIO + Redpanda."""
+    """Create a SparkSession configured for Iceberg + MinIO + Redpanda.
+
+    In local dev mode (FINFLOW_ENV=local, the default), this will:
+    - Auto-download required JARs via spark.jars.packages (Iceberg, Kafka, Hadoop-AWS).
+    - Use local filesystem checkpoints (MinIO S3BasedCheckpointFileManager
+      has no Maven artifact and must be built from source for Docker).
+    - Set hadoop.security.authentication=simple to avoid JDK 23+ getSubject errors.
+    """
     minio_endpoint = os.environ.get("MINIO_ENDPOINT", "http://minio:9000")
     minio_access_key = os.environ.get("MINIO_ACCESS_KEY", "minioadmin")
     minio_secret_key = os.environ.get("MINIO_SECRET_KEY", "minioadmin")
+    local_dev = _is_local_dev()
 
-    return (
+    # Required Maven packages — downloaded automatically on first run.
+    # Versions are pinned to match PySpark 4.x (Scala 2.13).
+    packages = ",".join([
+        "org.apache.iceberg:iceberg-spark-runtime-4.0_2.13:1.10.1",
+        "org.apache.spark:spark-sql-kafka-0-10_2.13:4.1.1",
+        "org.apache.hadoop:hadoop-aws:3.4.1",
+        "org.apache.iceberg:iceberg-aws-bundle:1.10.1",
+    ])
+
+    builder = (
         SparkSession.builder
         .appName("finflow-silver-writer")
+        .config("spark.jars.packages", packages)
         # Iceberg extensions
         .config(
             "spark.sql.extensions",
@@ -87,25 +110,52 @@ def create_spark_session() -> SparkSession:
             "spark.sql.catalog.finflow.uri",
             os.environ.get("ICEBERG_REST_URI", "http://iceberg-rest-catalog:8181"),
         )
-        # MinIO (S3-compatible) storage
+        # Iceberg catalog S3 properties — override server-side config so the
+        # client connects to our local MinIO, not the Docker-internal hostname.
+        .config("spark.sql.catalog.finflow.s3.endpoint", minio_endpoint)
+        .config("spark.sql.catalog.finflow.s3.access-key-id", minio_access_key)
+        .config("spark.sql.catalog.finflow.s3.secret-access-key", minio_secret_key)
+        .config("spark.sql.catalog.finflow.s3.path-style-access", "true")
+        .config("spark.sql.catalog.finflow.io-impl", "org.apache.iceberg.aws.s3.S3FileIO")
+        # Hadoop S3A — used for checkpoint and general S3 access
         .config("spark.hadoop.fs.s3a.endpoint", minio_endpoint)
         .config("spark.hadoop.fs.s3a.access.key", minio_access_key)
         .config("spark.hadoop.fs.s3a.secret.key", minio_secret_key)
         .config("spark.hadoop.fs.s3a.path.style.access", "true")
         .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
-        # MinIO S3-based checkpoint manager — AGENTS.md rule #4
-        .config(
+    )
+
+    if local_dev:
+        # In local dev, the MinIO S3BasedCheckpointFileManager JAR is not
+        # available (no Maven artifact — must be built from source).
+        # Use the default HDFS-based checkpoint manager with a local path.
+        logger.info("Local dev mode — using default checkpoint manager")
+    else:
+        # In Docker/prod, the MinIO checkpoint JAR is pre-installed.
+        # AGENTS.md rule #4: always use MinIO S3-based checkpoint manager.
+        builder = builder.config(
             "spark.sql.streaming.checkpointFileManagerClass",
             "io.minio.spark.checkpoint.S3BasedCheckpointFileManager",
         )
-        .getOrCreate()
-    )
+
+    return builder.getOrCreate()
 
 
 def run() -> None:
     """Run the Silver writer streaming job."""
     spark = create_spark_session()
+    
+    # Ensure table exists in the correct bucket (AGENTS.md rule)
+    table_name = "finflow.silver.transactions"
+    location = "s3a://finflow-silver/transactions"
+    if not spark.catalog.tableExists(table_name):
+        logger.info(f"Creating table {table_name} at {location}")
+        spark.createDataFrame([], SILVER_SCHEMA).writeTo(table_name) \
+            .tableProperty("location", location) \
+            .create()
+
     bootstrap_servers = os.environ.get("REDPANDA_BROKERS", "redpanda:9092")
+    checkpoint_location = "s3a://finflow-checkpoints/silver-transactions/"
 
     # Read from Redpanda
     raw_stream = (
@@ -136,7 +186,7 @@ def run() -> None:
         .format("iceberg")
         .outputMode("append")
         .trigger(processingTime="5 minutes")
-        .option("checkpointLocation", "s3a://finflow-checkpoints/silver-transactions/")
+        .option("checkpointLocation", checkpoint_location)
         .toTable("finflow.silver.transactions")
     )
 

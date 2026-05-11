@@ -6,7 +6,7 @@ SELECT
     COUNT(*) AS alert_count,
     AVG(txn_count) AS avg_txn_per_alert,
     AVG(total_amount) AS avg_amount_per_alert
-FROM mart_fraud_alerts
+FROM finflow.mart_fraud_alerts
 GROUP BY 1
 ORDER BY 1 DESC
 LIMIT 30
@@ -27,7 +27,7 @@ SELECT
     total_amount,
     window_duration_minutes,
     detected_at
-FROM mart_fraud_alerts
+FROM finflow.mart_fraud_alerts
 ORDER BY detected_at DESC
 LIMIT 50
 ```
