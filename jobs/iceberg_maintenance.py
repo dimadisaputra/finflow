@@ -36,9 +36,27 @@ def create_spark_session() -> SparkSession:
     minio_access_key = os.environ.get("MINIO_ACCESS_KEY", "minioadmin")
     minio_secret_key = os.environ.get("MINIO_SECRET_KEY", "minioadmin")
 
+    # Auto-download required JARs.
+    #
+    # Two AWS SDKs are required simultaneously:
+    #   - SDK v1 (com.amazonaws)          → Hadoop S3A (fs.s3a.*)
+    #   - SDK v2 (software.amazon.awssdk) → Iceberg S3FileIO + dynamic
+    #                                        Class.forName() check in
+    #                                        ResolvingFileIO.ioClass()
+    #
+    # SDK v2 must be >= 2.21.0 for crossRegionAccessEnabled().
+    # Iceberg 1.8.1 targets SDK v2 2.28.x — use 2.28.3.
+    packages = ",".join([
+        "org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.8.1",
+        "org.apache.hadoop:hadoop-aws:3.3.4",
+        "com.amazonaws:aws-java-sdk-bundle:1.12.262",   # SDK v1 for Hadoop S3A
+        "software.amazon.awssdk:bundle:2.28.3",          # SDK v2 for Iceberg S3FileIO
+    ])
+
     return (
         SparkSession.builder
         .appName("finflow-iceberg-maintenance")
+        .config("spark.jars.packages", packages)
         .config(
             "spark.sql.extensions",
             "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions",
@@ -49,6 +67,15 @@ def create_spark_session() -> SparkSession:
             "spark.sql.catalog.finflow.uri",
             os.environ.get("ICEBERG_REST_URI", "http://iceberg-rest-catalog:8181"),
         )
+        # Iceberg S3FileIO credentials — separate from Hadoop S3A config.
+        # spark.hadoop.fs.s3a.* only affects HadoopFileIO / Hadoop S3A.
+        # Iceberg S3FileIO reads from spark.sql.catalog.<name>.s3.* instead.
+        .config("spark.sql.catalog.finflow.io-impl", "org.apache.iceberg.aws.s3.S3FileIO")
+        .config("spark.sql.catalog.finflow.s3.endpoint", minio_endpoint)
+        .config("spark.sql.catalog.finflow.s3.access-key-id", minio_access_key)
+        .config("spark.sql.catalog.finflow.s3.secret-access-key", minio_secret_key)
+        .config("spark.sql.catalog.finflow.s3.path-style-access", "true")
+        # Hadoop S3A config — kept for any Hadoop-level S3 operations.
         .config("spark.hadoop.fs.s3a.endpoint", minio_endpoint)
         .config("spark.hadoop.fs.s3a.access.key", minio_access_key)
         .config("spark.hadoop.fs.s3a.secret.key", minio_secret_key)

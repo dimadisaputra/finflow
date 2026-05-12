@@ -9,7 +9,9 @@ data quality before serving to the Evidence.dev dashboard.
 from __future__ import annotations
 
 import logging
+import os
 
+import duckdb
 import great_expectations as gx
 
 logger = logging.getLogger(__name__)
@@ -21,13 +23,41 @@ def run_validation() -> None:
     Uses the v1.x Fluent API:
     - ``gx.get_context()`` (not ``DataContext()``)
     - ``context.data_sources.add_sql(...)`` (not ``suite.expect_*``)
+
+    In dev environments, the fraud alerts table may be empty (no streaming
+    pipeline data yet).  The validation skips gracefully in that case.
     """
+    # Resolve DuckDB path — works both locally and inside Docker
+    finflow_home = os.environ.get("FINFLOW_HOME", ".")
+    duckdb_path = os.path.join(finflow_home, "finflow.duckdb")
+
+    # Pre-flight check: skip if table is empty (expected in dev before
+    # the streaming pipeline has produced fraud alerts).
+    conn = duckdb.connect(duckdb_path, read_only=True)
+    try:
+        result = conn.sql("SELECT COUNT(*) FROM mart_fraud_alerts").fetchone()
+        row_count = result[0] if result is not None else 0
+    except duckdb.CatalogException:
+        logger.warning("Table mart_fraud_alerts does not exist yet — skipping validation")
+        return
+    finally:
+        conn.close()
+
+    if row_count == 0:
+        logger.warning(
+            "mart_fraud_alerts is empty — skipping GE validation "
+            "(expected in dev before streaming pipeline produces fraud alerts)"
+        )
+        return
+
+    logger.info("mart_fraud_alerts has %d rows — running GE validation", row_count)
+
     context = gx.get_context()
 
     # Add DuckDB data source
     data_source = context.data_sources.add_sql(
         name="finflow_gold",
-        connection_string="duckdb:///finflow.duckdb",
+        connection_string=f"duckdb:///{duckdb_path}",
     )
 
     # Add the fraud alerts table asset
@@ -36,8 +66,10 @@ def run_validation() -> None:
         table_name="mart_fraud_alerts",
     )
 
-    # Create a batch request
-    batch_request = fraud_alerts_asset.build_batch_request()
+    # Create a batch definition (GE v1.x requires BatchDefinition, not BatchRequest)
+    batch_definition = fraud_alerts_asset.add_batch_definition_whole_table(
+        name="mart_fraud_alerts_batch",
+    )
 
     # Define expectations
     expectation_suite = context.suites.add(
@@ -74,7 +106,7 @@ def run_validation() -> None:
     validation_definition = context.validation_definitions.add(
         gx.ValidationDefinition(
             name="gold_fraud_alerts_validation",
-            data=batch_request,
+            data=batch_definition,
             suite=expectation_suite,
         )
     )
