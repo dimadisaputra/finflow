@@ -18,7 +18,7 @@ install: ## Install Python dependencies
 	pip install -e ".[dev]"
 
 dev: ## Start the FastAPI ingestion server (dev mode)
-	uvicorn ingestion.main:app --reload --host 0.0.0.0 --port 8000
+	set -a && source .env && set +a && uvicorn ingestion.main:app --reload --host 0.0.0.0 --port 8000
 
 # ── Testing ──────────────────────────────────────────────────────
 test: ## Run unit tests (no Docker needed)
@@ -58,7 +58,7 @@ infra-reset: ## Reset all infrastructure (WARNING: deletes data)
 
 # ── Data Generation ──────────────────────────────────────────────
 simulate: ## Run synthetic data generator
-	python -m generator.simulate_sources
+	set -a && source .env && set +a && python -m generator.simulate_sources
 
 # ── Ingestion ────────────────────────────────────────────────────
 ingest-api: dev ## Alias for starting the ingestion API
@@ -123,3 +123,20 @@ airflow-down: ## Stop Airflow services
 
 airflow-logs: ## Tail Airflow logs
 	docker compose logs -f airflow-webserver airflow-scheduler
+
+# ── Observability ─────────────────────────────────────────────────
+obs-up: ## Start observability stack (Prometheus + Grafana + Loki + Promtail)
+	docker compose up -d prometheus grafana loki promtail
+	@echo ""
+	@echo "  Grafana   →  http://localhost:3000  (admin / admin)"
+	@echo "  Prometheus →  http://localhost:9090"
+	@echo "  Loki      →  http://localhost:3100"
+
+obs-down: ## Stop observability stack
+	docker compose stop prometheus grafana loki promtail
+
+obs-logs: ## Tail observability stack logs
+	docker compose logs -f prometheus grafana loki promtail
+
+obs-reload-prometheus: ## Hot-reload Prometheus config without restart
+	curl -s -X POST http://localhost:9090/-/reload && echo "Prometheus reloaded"

@@ -1,0 +1,367 @@
+WARNING: Using incubator modules: jdk.incubator.vector
+WARNING: package sun.security.action not in java.base
+Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
+26/05/13 09:53:33 WARN Utils: Your hostname, Dimass-MacBook-Air.local, resolves to a loopback address: 127.0.0.1; using 192.168.0.41 instead (on interface en0)
+26/05/13 09:53:33 WARN Utils: Set SPARK_LOCAL_IP if you need to bind to another address
+INFO:__main__:Local dev mode — using default checkpoint manager
+Using Spark's default log4j profile: org/apache/spark/log4j2-defaults.properties
+26/05/13 09:53:44 INFO SparkContext: Running Spark version 4.1.1
+26/05/13 09:53:44 INFO SparkContext: OS info Mac OS X, 26.5, aarch64
+26/05/13 09:53:44 INFO SparkContext: Java version 25.0.3+9-LTS
+26/05/13 09:53:44 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+26/05/13 09:53:44 INFO ResourceUtils: ==============================================================
+26/05/13 09:53:44 INFO ResourceUtils: No custom resources configured for spark.driver.
+26/05/13 09:53:44 INFO ResourceUtils: ==============================================================
+26/05/13 09:53:44 INFO SparkContext: Submitted application: finflow-silver-writer
+26/05/13 09:53:44 INFO SecurityManager: Changing view acls to: dimadisaputra
+26/05/13 09:53:44 INFO SecurityManager: Changing modify acls to: dimadisaputra
+26/05/13 09:53:44 INFO SecurityManager: Changing view acls groups to: dimadisaputra
+26/05/13 09:53:44 INFO SecurityManager: Changing modify acls groups to: dimadisaputra
+26/05/13 09:53:44 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: dimadisaputra groups with view permissions: EMPTY; users with modify permissions: dimadisaputra; groups with modify permissions: EMPTY; RPC SSL disabled
+26/05/13 09:53:44 INFO Utils: Successfully started service 'sparkDriver' on port 64819.
+26/05/13 09:53:44 INFO SparkEnv: Registering MapOutputTracker
+26/05/13 09:53:44 INFO SparkEnv: Registering BlockManagerMaster
+26/05/13 09:53:44 INFO BlockManagerMasterEndpoint: Using org.apache.spark.storage.DefaultTopologyMapper for getting topology information
+26/05/13 09:53:44 INFO BlockManagerMasterEndpoint: BlockManagerMasterEndpoint up
+26/05/13 09:53:44 INFO SparkEnv: Registering BlockManagerMasterHeartbeat
+26/05/13 09:53:44 INFO DiskBlockManager: Created local directory at /private/var/folders/qt/mkxlzcqn20d1scvww6pggpnm0000gn/T/blockmgr-ee0c7c57-779a-4f85-90ea-e40f82d6042d
+26/05/13 09:53:44 INFO SparkEnv: Registering OutputCommitCoordinator
+26/05/13 09:53:44 INFO JettyUtils: Start Jetty 0.0.0.0:4040 for SparkUI
+26/05/13 09:53:44 INFO Utils: Successfully started service 'SparkUI' on port 4040.
+26/05/13 09:53:44 INFO ResourceProfile: Default ResourceProfile created, executor resources: Map(cores -> name: cores, amount: 1, script: , vendor: , memory -> name: memory, amount: 1024, script: , vendor: , offHeap -> name: offHeap, amount: 0, script: , vendor: ), task resources: Map(cpus -> name: cpus, amount: 1.0)
+26/05/13 09:53:44 INFO ResourceProfile: Limiting resource is cpu
+26/05/13 09:53:44 INFO ResourceProfileManager: Added ResourceProfile id: 0
+26/05/13 09:53:44 INFO SecurityManager: Changing view acls to: dimadisaputra
+26/05/13 09:53:44 INFO SecurityManager: Changing modify acls to: dimadisaputra
+26/05/13 09:53:44 INFO SecurityManager: Changing view acls groups to: dimadisaputra
+26/05/13 09:53:44 INFO SecurityManager: Changing modify acls groups to: dimadisaputra
+26/05/13 09:53:44 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users with view permissions: dimadisaputra groups with view permissions: EMPTY; users with modify permissions: dimadisaputra; groups with modify permissions: EMPTY; RPC SSL disabled
+WARNING: A terminally deprecated method in sun.misc.Unsafe has been called
+WARNING: sun.misc.Unsafe::arrayBaseOffset has been called by org.apache.spark.unsafe.Platform (file:/Users/dimadisaputra/projects/finflow/.venv/lib/python3.12/site-packages/pyspark/jars/spark-unsafe_2.13-4.1.1.jar)
+WARNING: Please consider reporting this to the maintainers of class org.apache.spark.unsafe.Platform
+WARNING: sun.misc.Unsafe::arrayBaseOffset will be removed in a future release
+26/05/13 09:53:44 INFO Executor: Starting executor ID driver on host 192.168.0.41
+26/05/13 09:53:44 INFO Executor: OS info Mac OS X, 26.5, aarch64
+26/05/13 09:53:44 INFO Executor: Java version 25.0.3+9-LTS
+26/05/13 09:53:45 INFO Executor: Starting executor with user classpath (userClassPathFirst = false): ''
+26/05/13 09:53:45 INFO Executor: Created or updated repl class loader org.apache.spark.util.MutableURLClassLoader@5ac2457f for default.
+26/05/13 09:53:45 INFO Utils: Successfully started service 'org.apache.spark.network.netty.NettyBlockTransferService' on port 64821.
+26/05/13 09:53:45 INFO NettyBlockTransferService: Server created on 192.168.0.41:64821
+26/05/13 09:53:45 INFO BlockManager: Using org.apache.spark.storage.RandomBlockReplicationPolicy for block replication policy
+26/05/13 09:53:45 INFO BlockManagerMaster: Registering BlockManager BlockManagerId(driver, 192.168.0.41, 64821, None)
+26/05/13 09:53:45 INFO BlockManagerMasterEndpoint: Registering block manager 192.168.0.41:64821 with 434.4 MiB RAM, BlockManagerId(driver, 192.168.0.41, 64821, None)
+26/05/13 09:53:45 INFO BlockManagerMaster: Registered BlockManager BlockManagerId(driver, 192.168.0.41, 64821, None)
+26/05/13 09:53:45 INFO BlockManager: Initialized BlockManager: BlockManagerId(driver, 192.168.0.41, 64821, None)
+26/05/13 09:53:45 WARN SparkSession: Cannot use org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions to configure session extensions.
+java.lang.ClassNotFoundException: org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions
+	at java.base/java.net.URLClassLoader.findClass(URLClassLoader.java:377)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:557)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+	at java.base/java.lang.Class.forName0(Native Method)
+	at java.base/java.lang.Class.forName(Class.java:547)
+	at org.apache.spark.util.SparkClassUtils.classForName(SparkClassUtils.scala:42)
+	at org.apache.spark.util.SparkClassUtils.classForName$(SparkClassUtils.scala:37)
+	at org.apache.spark.util.Utils$.classForName(Utils.scala:97)
+	at org.apache.spark.sql.classic.SparkSession$.$anonfun$applyExtensions$2(SparkSession.scala:1232)
+	at org.apache.spark.sql.classic.SparkSession$.$anonfun$applyExtensions$2$adapted(SparkSession.scala:1230)
+	at scala.collection.IterableOnceOps.foreach(IterableOnce.scala:630)
+	at scala.collection.IterableOnceOps.foreach$(IterableOnce.scala:628)
+	at scala.collection.AbstractIterable.foreach(Iterable.scala:936)
+	at org.apache.spark.sql.classic.SparkSession$.org$apache$spark$sql$classic$SparkSession$$applyExtensions(SparkSession.scala:1230)
+	at org.apache.spark.sql.classic.SparkSession$.applyAndLoadExtensions(SparkSession.scala:1214)
+	at org.apache.spark.sql.classic.SparkSession.<init>(SparkSession.scala:117)
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:247)
+	at py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:374)
+	at py4j.Gateway.invoke(Gateway.java:238)
+	at py4j.commands.ConstructorCommand.invokeConstructor(ConstructorCommand.java:80)
+	at py4j.commands.ConstructorCommand.execute(ConstructorCommand.java:69)
+	at py4j.ClientServerConnection.waitForCommands(ClientServerConnection.java:184)
+	at py4j.ClientServerConnection.run(ClientServerConnection.java:108)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+26/05/13 09:53:45 WARN FileSystem: Cannot load filesystem
+java.util.ServiceConfigurationError: org.apache.hadoop.fs.FileSystem: Provider org.apache.hadoop.fs.viewfs.ViewFileSystem could not be instantiated
+	at java.base/java.util.ServiceLoader.fail(ServiceLoader.java:552)
+	at java.base/java.util.ServiceLoader$ProviderImpl.newInstance(ServiceLoader.java:712)
+	at java.base/java.util.ServiceLoader$ProviderImpl.get(ServiceLoader.java:672)
+	at java.base/java.util.ServiceLoader$2.next(ServiceLoader.java:1256)
+	at org.apache.hadoop.fs.FileSystem.loadFileSystems(FileSystem.java:3525)
+	at org.apache.hadoop.fs.FileSystem.getFileSystemClass(FileSystem.java:3562)
+	at org.apache.hadoop.fs.FsUrlStreamHandlerFactory.<init>(FsUrlStreamHandlerFactory.java:77)
+	at org.apache.spark.sql.internal.SharedState$.liftedTree2$1(SharedState.scala:209)
+	at org.apache.spark.sql.internal.SharedState$.org$apache$spark$sql$internal$SharedState$$setFsUrlStreamHandlerFactory(SharedState.scala:208)
+	at org.apache.spark.sql.internal.SharedState.<init>(SharedState.scala:56)
+	at org.apache.spark.sql.classic.SparkSession.$anonfun$sharedState$1(SparkSession.scala:176)
+	at scala.Option.getOrElse(Option.scala:201)
+	at org.apache.spark.sql.classic.SparkSession.sharedState$lzycompute(SparkSession.scala:176)
+	at org.apache.spark.sql.classic.SparkSession.sharedState(SparkSession.scala:175)
+	at org.apache.spark.sql.classic.SparkSession.$anonfun$sessionState$2(SparkSession.scala:187)
+	at scala.Option.getOrElse(Option.scala:201)
+	at org.apache.spark.sql.classic.SparkSession.sessionState$lzycompute(SparkSession.scala:185)
+	at org.apache.spark.sql.classic.SparkSession.sessionState(SparkSession.scala:182)
+	at org.apache.spark.sql.classic.Catalog.parseIdent(Catalog.scala:64)
+	at org.apache.spark.sql.classic.Catalog.toTableIdent(Catalog.scala:487)
+	at org.apache.spark.sql.classic.Catalog.tableExists(Catalog.scala:555)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)
+	at py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:374)
+	at py4j.Gateway.invoke(Gateway.java:282)
+	at py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)
+	at py4j.commands.CallCommand.execute(CallCommand.java:79)
+	at py4j.ClientServerConnection.waitForCommands(ClientServerConnection.java:184)
+	at py4j.ClientServerConnection.run(ClientServerConnection.java:108)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+Caused by: java.lang.UnsupportedOperationException: getSubject is not supported
+	at java.base/javax.security.auth.Subject.getSubject(Subject.java:277)
+	at org.apache.hadoop.security.UserGroupInformation.getCurrentUser(UserGroupInformation.java:588)
+	at org.apache.hadoop.fs.viewfs.ViewFileSystem.<init>(ViewFileSystem.java:281)
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:62)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:499)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:483)
+	at java.base/java.util.ServiceLoader$ProviderImpl.newInstance(ServiceLoader.java:707)
+	... 29 more
+26/05/13 09:53:45 INFO SharedState: Setting hive.metastore.warehouse.dir ('null') to the value of spark.sql.warehouse.dir.
+26/05/13 09:53:45 WARN SharedState: Cannot qualify the warehouse path, leaving it unqualified.
+java.lang.UnsupportedOperationException: getSubject is not supported
+	at java.base/javax.security.auth.Subject.getSubject(Subject.java:277)
+	at org.apache.hadoop.security.UserGroupInformation.getCurrentUser(UserGroupInformation.java:588)
+	at org.apache.hadoop.fs.FileSystem$Cache$Key.<init>(FileSystem.java:3888)
+	at org.apache.hadoop.fs.FileSystem$Cache$Key.<init>(FileSystem.java:3878)
+	at org.apache.hadoop.fs.FileSystem$Cache.get(FileSystem.java:3666)
+	at org.apache.hadoop.fs.FileSystem.get(FileSystem.java:557)
+	at org.apache.hadoop.fs.Path.getFileSystem(Path.java:366)
+	at org.apache.spark.sql.internal.SharedState$.qualifyWarehousePath(SharedState.scala:302)
+	at org.apache.spark.sql.internal.SharedState.liftedTree1$1(SharedState.scala:82)
+	at org.apache.spark.sql.internal.SharedState.<init>(SharedState.scala:81)
+	at org.apache.spark.sql.classic.SparkSession.$anonfun$sharedState$1(SparkSession.scala:176)
+	at scala.Option.getOrElse(Option.scala:201)
+	at org.apache.spark.sql.classic.SparkSession.sharedState$lzycompute(SparkSession.scala:176)
+	at org.apache.spark.sql.classic.SparkSession.sharedState(SparkSession.scala:175)
+	at org.apache.spark.sql.classic.SparkSession.$anonfun$sessionState$2(SparkSession.scala:187)
+	at scala.Option.getOrElse(Option.scala:201)
+	at org.apache.spark.sql.classic.SparkSession.sessionState$lzycompute(SparkSession.scala:185)
+	at org.apache.spark.sql.classic.SparkSession.sessionState(SparkSession.scala:182)
+	at org.apache.spark.sql.classic.Catalog.parseIdent(Catalog.scala:64)
+	at org.apache.spark.sql.classic.Catalog.toTableIdent(Catalog.scala:487)
+	at org.apache.spark.sql.classic.Catalog.tableExists(Catalog.scala:555)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)
+	at py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:374)
+	at py4j.Gateway.invoke(Gateway.java:282)
+	at py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)
+	at py4j.commands.CallCommand.execute(CallCommand.java:79)
+	at py4j.ClientServerConnection.waitForCommands(ClientServerConnection.java:184)
+	at py4j.ClientServerConnection.run(ClientServerConnection.java:108)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+Traceback (most recent call last):
+  File "/Users/dimadisaputra/projects/finflow/streaming/silver_writer.py", line 217, in <module>
+    run()
+  File "/Users/dimadisaputra/projects/finflow/streaming/silver_writer.py", line 158, in run
+    if not spark.catalog.tableExists(table_name):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/dimadisaputra/projects/finflow/.venv/lib/python3.12/site-packages/pyspark/python/lib/pyspark.zip/pyspark/sql/catalog.py", line 745, in tableExists
+  File "/Users/dimadisaputra/projects/finflow/.venv/lib/python3.12/site-packages/pyspark/python/lib/py4j-0.10.9.9-src.zip/py4j/java_gateway.py", line 1362, in __call__
+  File "/Users/dimadisaputra/projects/finflow/.venv/lib/python3.12/site-packages/pyspark/python/lib/pyspark.zip/pyspark/errors/exceptions/captured.py", line 263, in deco
+  File "/Users/dimadisaputra/projects/finflow/.venv/lib/python3.12/site-packages/pyspark/python/lib/py4j-0.10.9.9-src.zip/py4j/protocol.py", line 327, in get_return_value
+py4j.protocol.Py4JJavaError: An error occurred while calling o57.tableExists.
+: org.apache.spark.SparkException: Cannot find catalog plugin class for catalog 'finflow': org.apache.iceberg.spark.SparkCatalog.
+	at org.apache.spark.sql.errors.QueryExecutionErrors$.catalogPluginClassNotFoundForCatalogError(QueryExecutionErrors.scala:1887)
+	at org.apache.spark.sql.connector.catalog.Catalogs$.load(Catalogs.scala:71)
+	at org.apache.spark.sql.connector.catalog.CatalogManager.$anonfun$catalog$1(CatalogManager.scala:56)
+	at scala.collection.mutable.HashMap.getOrElseUpdate(HashMap.scala:469)
+	at org.apache.spark.sql.connector.catalog.CatalogManager.catalog(CatalogManager.scala:56)
+	at org.apache.spark.sql.connector.catalog.LookupCatalog$CatalogAndIdentifier$.unapply(LookupCatalog.scala:122)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$.$anonfun$lookupTableOrView$2(Analyzer.scala:1298)
+	at scala.Option.orElse(Option.scala:477)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$.org$apache$spark$sql$catalyst$analysis$Analyzer$ResolveRelations$$lookupTableOrView(Analyzer.scala:1297)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$$anonfun$apply$12.applyOrElse(Analyzer.scala:1279)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$$anonfun$apply$12.applyOrElse(Analyzer.scala:1205)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.$anonfun$resolveOperatorsUpWithPruning$3(AnalysisHelper.scala:139)
+	at org.apache.spark.sql.catalyst.trees.CurrentOrigin$.withOrigin(origin.scala:107)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.$anonfun$resolveOperatorsUpWithPruning$1(AnalysisHelper.scala:139)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper$.allowInvokingTransformsInAnalyzer(AnalysisHelper.scala:416)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.resolveOperatorsUpWithPruning(AnalysisHelper.scala:135)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.resolveOperatorsUpWithPruning$(AnalysisHelper.scala:131)
+	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.resolveOperatorsUpWithPruning(LogicalPlan.scala:37)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$.apply(Analyzer.scala:1205)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$.apply(Analyzer.scala:1167)
+	at org.apache.spark.sql.catalyst.rules.RuleExecutor.$anonfun$execute$2(RuleExecutor.scala:248)
+	at scala.collection.LinearSeqOps.foldLeft(LinearSeq.scala:183)
+	at scala.collection.LinearSeqOps.foldLeft$(LinearSeq.scala:179)
+	at scala.collection.immutable.List.foldLeft(List.scala:79)
+	at org.apache.spark.sql.catalyst.rules.RuleExecutor.$anonfun$execute$1(RuleExecutor.scala:245)
+	at org.apache.spark.sql.catalyst.rules.RuleExecutor.$anonfun$execute$1$adapted(RuleExecutor.scala:237)
+	at scala.collection.immutable.List.foreach(List.scala:323)
+	at org.apache.spark.sql.catalyst.rules.RuleExecutor.execute(RuleExecutor.scala:237)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer.org$apache$spark$sql$catalyst$analysis$Analyzer$$executeSameContext(Analyzer.scala:343)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer.$anonfun$execute$1(Analyzer.scala:339)
+	at org.apache.spark.sql.catalyst.analysis.AnalysisContext$.withNewAnalysisContext(Analyzer.scala:224)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer.execute(Analyzer.scala:339)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer.execute(Analyzer.scala:289)
+	at org.apache.spark.sql.catalyst.rules.RuleExecutor.$anonfun$executeAndTrack$1(RuleExecutor.scala:207)
+	at org.apache.spark.sql.catalyst.QueryPlanningTracker$.withTracker(QueryPlanningTracker.scala:89)
+	at org.apache.spark.sql.catalyst.rules.RuleExecutor.executeAndTrack(RuleExecutor.scala:207)
+	at org.apache.spark.sql.catalyst.analysis.resolver.HybridAnalyzer.resolveInFixedPoint(HybridAnalyzer.scala:236)
+	at org.apache.spark.sql.catalyst.analysis.resolver.HybridAnalyzer.$anonfun$apply$1(HybridAnalyzer.scala:91)
+	at org.apache.spark.sql.catalyst.analysis.resolver.HybridAnalyzer.withTrackedAnalyzerBridgeState(HybridAnalyzer.scala:122)
+	at org.apache.spark.sql.catalyst.analysis.resolver.HybridAnalyzer.apply(HybridAnalyzer.scala:84)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer.$anonfun$executeAndCheck$1(Analyzer.scala:322)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper$.markInAnalyzer(AnalysisHelper.scala:423)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer.executeAndCheck(Analyzer.scala:322)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$lazyAnalyzed$2(QueryExecution.scala:139)
+	at org.apache.spark.sql.catalyst.QueryPlanningTracker.measurePhase(QueryPlanningTracker.scala:148)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$executePhase$2(QueryExecution.scala:330)
+	at org.apache.spark.sql.execution.QueryExecution$.withInternalError(QueryExecution.scala:717)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$executePhase$1(QueryExecution.scala:330)
+	at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:804)
+	at org.apache.spark.sql.execution.QueryExecution.executePhase(QueryExecution.scala:329)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$lazyAnalyzed$1(QueryExecution.scala:139)
+	at scala.util.Try$.apply(Try.scala:217)
+	at org.apache.spark.util.Utils$.doTryWithCallerStacktrace(Utils.scala:1392)
+	at org.apache.spark.util.Utils$.getTryWithCallerStacktrace(Utils.scala:1453)
+	at org.apache.spark.util.LazyTry.get(LazyTry.scala:58)
+	at org.apache.spark.sql.execution.QueryExecution.analyzed(QueryExecution.scala:150)
+	at org.apache.spark.sql.classic.Catalog.tableExists(Catalog.scala:208)
+	at org.apache.spark.sql.classic.Catalog.tableExists(Catalog.scala:555)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:565)
+	at py4j.reflection.MethodInvoker.invoke(MethodInvoker.java:244)
+	at py4j.reflection.ReflectionEngine.invoke(ReflectionEngine.java:374)
+	at py4j.Gateway.invoke(Gateway.java:282)
+	at py4j.commands.AbstractCommand.invokeMethod(AbstractCommand.java:132)
+	at py4j.commands.CallCommand.execute(CallCommand.java:79)
+	at py4j.ClientServerConnection.waitForCommands(ClientServerConnection.java:184)
+	at py4j.ClientServerConnection.run(ClientServerConnection.java:108)
+	at java.base/java.lang.Thread.run(Thread.java:1474)
+	Suppressed: org.apache.spark.util.Utils$OriginalTryStackTraceException: Full stacktrace of original doTryWithCallerStacktrace caller
+		at org.apache.spark.sql.errors.QueryExecutionErrors$.catalogPluginClassNotFoundForCatalogError(QueryExecutionErrors.scala:1887)
+		at org.apache.spark.sql.connector.catalog.Catalogs$.load(Catalogs.scala:71)
+		at org.apache.spark.sql.connector.catalog.CatalogManager.$anonfun$catalog$1(CatalogManager.scala:56)
+		at scala.collection.mutable.HashMap.getOrElseUpdate(HashMap.scala:469)
+		at org.apache.spark.sql.connector.catalog.CatalogManager.catalog(CatalogManager.scala:56)
+		at org.apache.spark.sql.connector.catalog.LookupCatalog$CatalogAndIdentifier$.unapply(LookupCatalog.scala:122)
+		at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$.$anonfun$lookupTableOrView$2(Analyzer.scala:1298)
+		at scala.Option.orElse(Option.scala:477)
+		at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$.org$apache$spark$sql$catalyst$analysis$Analyzer$ResolveRelations$$lookupTableOrView(Analyzer.scala:1297)
+		at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$$anonfun$apply$12.applyOrElse(Analyzer.scala:1279)
+		at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$$anonfun$apply$12.applyOrElse(Analyzer.scala:1205)
+		at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.$anonfun$resolveOperatorsUpWithPruning$3(AnalysisHelper.scala:139)
+		at org.apache.spark.sql.catalyst.trees.CurrentOrigin$.withOrigin(origin.scala:107)
+		at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.$anonfun$resolveOperatorsUpWithPruning$1(AnalysisHelper.scala:139)
+		at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper$.allowInvokingTransformsInAnalyzer(AnalysisHelper.scala:416)
+		at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.resolveOperatorsUpWithPruning(AnalysisHelper.scala:135)
+		at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.resolveOperatorsUpWithPruning$(AnalysisHelper.scala:131)
+		at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.resolveOperatorsUpWithPruning(LogicalPlan.scala:37)
+		at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$.apply(Analyzer.scala:1205)
+		at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$.apply(Analyzer.scala:1167)
+		at org.apache.spark.sql.catalyst.rules.RuleExecutor.$anonfun$execute$2(RuleExecutor.scala:248)
+		at scala.collection.LinearSeqOps.foldLeft(LinearSeq.scala:183)
+		at scala.collection.LinearSeqOps.foldLeft$(LinearSeq.scala:179)
+		at scala.collection.immutable.List.foldLeft(List.scala:79)
+		at org.apache.spark.sql.catalyst.rules.RuleExecutor.$anonfun$execute$1(RuleExecutor.scala:245)
+		at org.apache.spark.sql.catalyst.rules.RuleExecutor.$anonfun$execute$1$adapted(RuleExecutor.scala:237)
+		at scala.collection.immutable.List.foreach(List.scala:323)
+		at org.apache.spark.sql.catalyst.rules.RuleExecutor.execute(RuleExecutor.scala:237)
+		at org.apache.spark.sql.catalyst.analysis.Analyzer.org$apache$spark$sql$catalyst$analysis$Analyzer$$executeSameContext(Analyzer.scala:343)
+		at org.apache.spark.sql.catalyst.analysis.Analyzer.$anonfun$execute$1(Analyzer.scala:339)
+		at org.apache.spark.sql.catalyst.analysis.AnalysisContext$.withNewAnalysisContext(Analyzer.scala:224)
+		at org.apache.spark.sql.catalyst.analysis.Analyzer.execute(Analyzer.scala:339)
+		at org.apache.spark.sql.catalyst.analysis.Analyzer.execute(Analyzer.scala:289)
+		at org.apache.spark.sql.catalyst.rules.RuleExecutor.$anonfun$executeAndTrack$1(RuleExecutor.scala:207)
+		at org.apache.spark.sql.catalyst.QueryPlanningTracker$.withTracker(QueryPlanningTracker.scala:89)
+		at org.apache.spark.sql.catalyst.rules.RuleExecutor.executeAndTrack(RuleExecutor.scala:207)
+		at org.apache.spark.sql.catalyst.analysis.resolver.HybridAnalyzer.resolveInFixedPoint(HybridAnalyzer.scala:236)
+		at org.apache.spark.sql.catalyst.analysis.resolver.HybridAnalyzer.$anonfun$apply$1(HybridAnalyzer.scala:91)
+		at org.apache.spark.sql.catalyst.analysis.resolver.HybridAnalyzer.withTrackedAnalyzerBridgeState(HybridAnalyzer.scala:122)
+		at org.apache.spark.sql.catalyst.analysis.resolver.HybridAnalyzer.apply(HybridAnalyzer.scala:84)
+		at org.apache.spark.sql.catalyst.analysis.Analyzer.$anonfun$executeAndCheck$1(Analyzer.scala:322)
+		at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper$.markInAnalyzer(AnalysisHelper.scala:423)
+		at org.apache.spark.sql.catalyst.analysis.Analyzer.executeAndCheck(Analyzer.scala:322)
+		at org.apache.spark.sql.execution.QueryExecution.$anonfun$lazyAnalyzed$2(QueryExecution.scala:139)
+		at org.apache.spark.sql.catalyst.QueryPlanningTracker.measurePhase(QueryPlanningTracker.scala:148)
+		at org.apache.spark.sql.execution.QueryExecution.$anonfun$executePhase$2(QueryExecution.scala:330)
+		at org.apache.spark.sql.execution.QueryExecution$.withInternalError(QueryExecution.scala:717)
+		at org.apache.spark.sql.execution.QueryExecution.$anonfun$executePhase$1(QueryExecution.scala:330)
+		at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:804)
+		at org.apache.spark.sql.execution.QueryExecution.executePhase(QueryExecution.scala:329)
+		at org.apache.spark.sql.execution.QueryExecution.$anonfun$lazyAnalyzed$1(QueryExecution.scala:139)
+		at scala.util.Try$.apply(Try.scala:217)
+		at org.apache.spark.util.Utils$.doTryWithCallerStacktrace(Utils.scala:1392)
+		at org.apache.spark.util.LazyTry.tryT$lzycompute(LazyTry.scala:46)
+		at org.apache.spark.util.LazyTry.tryT(LazyTry.scala:46)
+		... 14 more
+Caused by: java.lang.ClassNotFoundException: org.apache.iceberg.spark.SparkCatalog
+	at java.base/java.net.URLClassLoader.findClass(URLClassLoader.java:377)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:557)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:490)
+	at org.apache.spark.sql.connector.catalog.Catalogs$.load(Catalogs.scala:61)
+	at org.apache.spark.sql.connector.catalog.CatalogManager.$anonfun$catalog$1(CatalogManager.scala:56)
+	at scala.collection.mutable.HashMap.getOrElseUpdate(HashMap.scala:469)
+	at org.apache.spark.sql.connector.catalog.CatalogManager.catalog(CatalogManager.scala:56)
+	at org.apache.spark.sql.connector.catalog.LookupCatalog$CatalogAndIdentifier$.unapply(LookupCatalog.scala:122)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$.$anonfun$lookupTableOrView$2(Analyzer.scala:1298)
+	at scala.Option.orElse(Option.scala:477)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$.org$apache$spark$sql$catalyst$analysis$Analyzer$ResolveRelations$$lookupTableOrView(Analyzer.scala:1297)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$$anonfun$apply$12.applyOrElse(Analyzer.scala:1279)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$$anonfun$apply$12.applyOrElse(Analyzer.scala:1205)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.$anonfun$resolveOperatorsUpWithPruning$3(AnalysisHelper.scala:139)
+	at org.apache.spark.sql.catalyst.trees.CurrentOrigin$.withOrigin(origin.scala:107)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.$anonfun$resolveOperatorsUpWithPruning$1(AnalysisHelper.scala:139)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper$.allowInvokingTransformsInAnalyzer(AnalysisHelper.scala:416)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.resolveOperatorsUpWithPruning(AnalysisHelper.scala:135)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper.resolveOperatorsUpWithPruning$(AnalysisHelper.scala:131)
+	at org.apache.spark.sql.catalyst.plans.logical.LogicalPlan.resolveOperatorsUpWithPruning(LogicalPlan.scala:37)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$.apply(Analyzer.scala:1205)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer$ResolveRelations$.apply(Analyzer.scala:1167)
+	at org.apache.spark.sql.catalyst.rules.RuleExecutor.$anonfun$execute$2(RuleExecutor.scala:248)
+	at scala.collection.LinearSeqOps.foldLeft(LinearSeq.scala:183)
+	at scala.collection.LinearSeqOps.foldLeft$(LinearSeq.scala:179)
+	at scala.collection.immutable.List.foldLeft(List.scala:79)
+	at org.apache.spark.sql.catalyst.rules.RuleExecutor.$anonfun$execute$1(RuleExecutor.scala:245)
+	at org.apache.spark.sql.catalyst.rules.RuleExecutor.$anonfun$execute$1$adapted(RuleExecutor.scala:237)
+	at scala.collection.immutable.List.foreach(List.scala:323)
+	at org.apache.spark.sql.catalyst.rules.RuleExecutor.execute(RuleExecutor.scala:237)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer.org$apache$spark$sql$catalyst$analysis$Analyzer$$executeSameContext(Analyzer.scala:343)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer.$anonfun$execute$1(Analyzer.scala:339)
+	at org.apache.spark.sql.catalyst.analysis.AnalysisContext$.withNewAnalysisContext(Analyzer.scala:224)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer.execute(Analyzer.scala:339)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer.execute(Analyzer.scala:289)
+	at org.apache.spark.sql.catalyst.rules.RuleExecutor.$anonfun$executeAndTrack$1(RuleExecutor.scala:207)
+	at org.apache.spark.sql.catalyst.QueryPlanningTracker$.withTracker(QueryPlanningTracker.scala:89)
+	at org.apache.spark.sql.catalyst.rules.RuleExecutor.executeAndTrack(RuleExecutor.scala:207)
+	at org.apache.spark.sql.catalyst.analysis.resolver.HybridAnalyzer.resolveInFixedPoint(HybridAnalyzer.scala:236)
+	at org.apache.spark.sql.catalyst.analysis.resolver.HybridAnalyzer.$anonfun$apply$1(HybridAnalyzer.scala:91)
+	at org.apache.spark.sql.catalyst.analysis.resolver.HybridAnalyzer.withTrackedAnalyzerBridgeState(HybridAnalyzer.scala:122)
+	at org.apache.spark.sql.catalyst.analysis.resolver.HybridAnalyzer.apply(HybridAnalyzer.scala:84)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer.$anonfun$executeAndCheck$1(Analyzer.scala:322)
+	at org.apache.spark.sql.catalyst.plans.logical.AnalysisHelper$.markInAnalyzer(AnalysisHelper.scala:423)
+	at org.apache.spark.sql.catalyst.analysis.Analyzer.executeAndCheck(Analyzer.scala:322)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$lazyAnalyzed$2(QueryExecution.scala:139)
+	at org.apache.spark.sql.catalyst.QueryPlanningTracker.measurePhase(QueryPlanningTracker.scala:148)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$executePhase$2(QueryExecution.scala:330)
+	at org.apache.spark.sql.execution.QueryExecution$.withInternalError(QueryExecution.scala:717)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$executePhase$1(QueryExecution.scala:330)
+	at org.apache.spark.sql.SparkSession.withActive(SparkSession.scala:804)
+	at org.apache.spark.sql.execution.QueryExecution.executePhase(QueryExecution.scala:329)
+	at org.apache.spark.sql.execution.QueryExecution.$anonfun$lazyAnalyzed$1(QueryExecution.scala:139)
+	at scala.util.Try$.apply(Try.scala:217)
+	at org.apache.spark.util.Utils$.doTryWithCallerStacktrace(Utils.scala:1392)
+	at org.apache.spark.util.LazyTry.tryT$lzycompute(LazyTry.scala:46)
+	at org.apache.spark.util.LazyTry.tryT(LazyTry.scala:46)
+	... 14 more
+
+INFO:py4j.clientserver:Closing down clientserver connection
+26/05/13 09:53:46 INFO SparkContext: Invoking stop() from shutdown hook
+26/05/13 09:53:46 INFO SparkContext: SparkContext is stopping with exitCode 0 from run at Executors.java:545.
+26/05/13 09:53:46 INFO SparkUI: Stopped Spark web UI at http://192.168.0.41:4040
+26/05/13 09:53:46 INFO MapOutputTrackerMasterEndpoint: MapOutputTrackerMasterEndpoint stopped!
+26/05/13 09:53:46 INFO MemoryStore: MemoryStore started with capacity 434.4 MiB
+26/05/13 09:53:46 INFO MemoryStore: MemoryStore cleared
+26/05/13 09:53:46 INFO BlockManager: BlockManager stopped
+26/05/13 09:53:46 INFO BlockManagerMaster: BlockManagerMaster stopped
+26/05/13 09:53:46 INFO OutputCommitCoordinator$OutputCommitCoordinatorEndpoint: OutputCommitCoordinator stopped!
+26/05/13 09:53:46 INFO SparkContext: Successfully stopped SparkContext (Uptime: 1932 ms)

@@ -14,39 +14,30 @@ dependencies = [
     # FastAPI + async server
     "fastapi>=0.111.0",
     "uvicorn[standard]>=0.29.0",
-
     # Kafka (async only — never kafka-python)
     "aiokafka>=0.10.0",
-
     # Data contracts
     "pydantic>=2.7.0",
-
     # PII tokenization
     "ff3>=1.0.0",
-
     # Data generation
     "faker>=25.0.0",
-
     # HTTP client (for generator)
     "httpx>=0.27.0",
-
+    # Prometheus metrics — exposes /metrics for Grafana scraping
+    "prometheus-fastapi-instrumentator>=6.1.0",
     # PySpark (for streaming + batch jobs)
     "pyspark>=3.5.0",
-
     # dbt (DuckDB adapter)
     "dbt-duckdb>=1.7.0",
-
     # Data quality
     "great-expectations>=1.0.0",
-
     # DuckDB
     "duckdb>=0.10.0",
-
     # Airflow (pinned to 2.x — DAGs use 2.x operator imports)
     "apache-airflow>=2.9.1,<3.0.0",
-
     #Pytest
-    "pytest>=8.0.0"
+    "pytest>=8.0.0",
 ]
 
 [tool.uv]
