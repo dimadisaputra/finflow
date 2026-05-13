@@ -1,44 +1,33 @@
 """Fraud Detection — Silver → velocity check → finflow.fraud.alerts.
-
 Reads from the Silver Iceberg table using Spark Structured Streaming,
 applies velocity-based fraud detection rules (e.g. multiple transactions
 from the same user in a short window), and writes fraud alerts to the
 ``finflow.fraud.alerts`` Redpanda topic.
-
 Alerts must flow through ``alerts_sink.py`` before reaching DuckDB —
 never read directly from Redpanda into DuckDB (AGENTS.md rule #5).
 """
-
 from __future__ import annotations
-
 import logging
 import os
-
+from streaming.metrics import attach_query_listener, mark_query_active, start_metrics_server
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql import Window
-
 logger = logging.getLogger(__name__)
-
 # Velocity detection parameters
 WINDOW_DURATION = "10 minutes"
 SLIDE_DURATION = "1 minute"
 MAX_TRANSACTIONS_PER_WINDOW = 5  # Flag if user exceeds this
 HIGH_AMOUNT_THRESHOLD = 10_000_000  # Flag single transactions above this amount (IDR)
-
-
 def _is_local_dev() -> bool:
     """Detect if we are running in local development mode (outside Docker)."""
     return os.environ.get("FINFLOW_ENV", "local") == "local"
-
-
 def create_spark_session() -> SparkSession:
     """Create a SparkSession configured for Iceberg + MinIO + Redpanda."""
     minio_endpoint = os.environ.get("MINIO_ENDPOINT", "http://minio:9000")
     minio_access_key = os.environ.get("MINIO_ACCESS_KEY", "minioadmin")
     minio_secret_key = os.environ.get("MINIO_SECRET_KEY", "minioadmin")
     local_dev = _is_local_dev()
-
     builder = (
         SparkSession.builder
         .appName("finflow-fraud-detection")
@@ -63,27 +52,23 @@ def create_spark_session() -> SparkSession:
         .config("spark.hadoop.fs.s3a.path.style.access", "true")
         .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
     )
-
     if not local_dev:
         builder = builder.config(
             "spark.sql.streaming.checkpointFileManagerClass",
             "io.minio.spark.checkpoint.S3BasedCheckpointFileManager",
         )
-
     return builder.getOrCreate()
-
-
 def run() -> None:
     """Run the fraud detection streaming job."""
     spark = create_spark_session()
-
+    # Start Prometheus metrics server on port 8002
+    start_metrics_server(port=8002, job_name="fraud-detection")
     # Read from Silver Iceberg table as a stream
     silver_stream = (
         spark.readStream
         .format("iceberg")
         .load("finflow.silver.transactions")
     )
-
     # Velocity check — count transactions per user in a sliding window
     velocity_alerts = (
         silver_stream
@@ -114,10 +99,12 @@ def run() -> None:
         )
     )
 
+    # Attach Prometheus listener BEFORE query starts to capture onQueryStarted
+    attach_query_listener(spark, job_name="fraud-detection")
+
     # Write alerts to Redpanda topic
     bootstrap_servers = os.environ.get("REDPANDA_BROKERS", "redpanda:9092")
     checkpoint_location = "s3a://finflow-checkpoints/fraud-alerts/"
-
     query = (
         velocity_alerts.selectExpr("to_json(struct(*)) AS value")
         .writeStream
@@ -129,10 +116,11 @@ def run() -> None:
         .start()
     )
 
+    # Mark active after query starts (belt-and-suspenders with onQueryStarted)
+    mark_query_active(job_name="fraud-detection")
+
     logger.info("Fraud detection started — awaiting termination")
     query.awaitTermination()
-
-
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     run()

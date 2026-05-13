@@ -1,20 +1,16 @@
 """Silver Writer — Redpanda → Bronze → Silver (Iceberg).
-
 Reads raw JSON transactions from all ``finflow.transactions.*`` Redpanda
 topics, applies schema normalization, and writes to the Silver Iceberg
 table (``finflow.silver.transactions``).
-
 Critical rules enforced:
 - Always writes to Iceberg (never raw Parquet) — see AGENTS.md rule #3.
 - Uses MinIO S3-based checkpoint manager — see AGENTS.md rule #4.
 - Processing time trigger: 5 minutes.
 """
-
 from __future__ import annotations
-
 import logging
 import os
-
+from streaming.metrics import attach_query_listener, mark_query_active, start_metrics_server
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.types import (
@@ -24,9 +20,7 @@ from pyspark.sql.types import (
     StructType,
     TimestampType,
 )
-
 logger = logging.getLogger(__name__)
-
 # All transaction topics to subscribe to.
 SUBSCRIBE_TOPICS = ",".join([
     "finflow.transactions.bca",
@@ -35,7 +29,6 @@ SUBSCRIBE_TOPICS = ",".join([
     "finflow.transactions.ovo",
     "finflow.transactions.visa",
 ])
-
 # Unified Silver schema — all source-specific fields are nullable.
 SILVER_SCHEMA = StructType([
     StructField("transaction_id", StringType(), nullable=False),
@@ -64,16 +57,11 @@ SILVER_SCHEMA = StructType([
     # Metadata
     StructField("ingested_at", TimestampType(), nullable=False),
 ])
-
-
 def _is_local_dev() -> bool:
     """Detect if we are running in local development mode (outside Docker)."""
     return os.environ.get("FINFLOW_ENV", "local") == "local"
-
-
 def create_spark_session() -> SparkSession:
     """Create a SparkSession configured for Iceberg + MinIO + Redpanda.
-
     In local dev mode (FINFLOW_ENV=local, the default), this will:
     - Auto-download required JARs via spark.jars.packages (Iceberg, Kafka, Hadoop-AWS).
     - Use local filesystem checkpoints (MinIO S3BasedCheckpointFileManager
@@ -84,7 +72,6 @@ def create_spark_session() -> SparkSession:
     minio_access_key = os.environ.get("MINIO_ACCESS_KEY", "minioadmin")
     minio_secret_key = os.environ.get("MINIO_SECRET_KEY", "minioadmin")
     local_dev = _is_local_dev()
-
     builder = (
         SparkSession.builder
         .appName("finflow-silver-writer")
@@ -114,7 +101,6 @@ def create_spark_session() -> SparkSession:
         .config("spark.hadoop.fs.s3a.path.style.access", "true")
         .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
     )
-
     if local_dev:
         # In local dev, the MinIO S3BasedCheckpointFileManager JAR is not
         # available (no Maven artifact — must be built from source).
@@ -127,14 +113,13 @@ def create_spark_session() -> SparkSession:
             "spark.sql.streaming.checkpointFileManagerClass",
             "io.minio.spark.checkpoint.S3BasedCheckpointFileManager",
         )
-
     return builder.getOrCreate()
-
-
 def run() -> None:
     """Run the Silver writer streaming job."""
     spark = create_spark_session()
     
+    # Start Prometheus metrics server on port 8001
+    start_metrics_server(port=8001, job_name="silver-writer")
     # Ensure table exists in the correct bucket (AGENTS.md rule)
     table_name = "finflow.silver.transactions"
     location = "s3a://finflow-silver/transactions"
@@ -143,10 +128,8 @@ def run() -> None:
         spark.createDataFrame([], SILVER_SCHEMA).writeTo(table_name) \
             .tableProperty("location", location) \
             .create()
-
     bootstrap_servers = os.environ.get("REDPANDA_BROKERS", "redpanda:9092")
     checkpoint_location = "s3a://finflow-checkpoints/silver-transactions/"
-
     # Read from Redpanda
     raw_stream = (
         spark.readStream
@@ -157,7 +140,6 @@ def run() -> None:
         .option("failOnDataLoss", "false")
         .load()
     )
-
     # Parse JSON payloads
     parsed = (
         raw_stream
@@ -170,6 +152,9 @@ def run() -> None:
         .withColumn("ingested_at", F.current_timestamp())
     )
 
+    # Attach Prometheus listener BEFORE query starts to capture onQueryStarted
+    attach_query_listener(spark, job_name="silver-writer")
+
     # Write to Iceberg — NEVER raw Parquet (AGENTS.md rule #3)
     query = (
         parsed.writeStream
@@ -180,10 +165,11 @@ def run() -> None:
         .toTable("finflow.silver.transactions")
     )
 
+    # Mark active after query starts (belt-and-suspenders with onQueryStarted)
+    mark_query_active(job_name="silver-writer")
+
     logger.info("Silver writer started — awaiting termination")
     query.awaitTermination()
-
-
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     run()

@@ -63,3 +63,9 @@ scrape_configs:
     static_configs:
       - targets: [host.docker.internal:8002]
     metrics_path: /metrics
+
+  # ── Spark Streaming — Alerts Sink ───────────────────────────────
+  - job_name: finflow-alerts-sink
+    static_configs:
+      - targets: [host.docker.internal:8003]
+    metrics_path: /metrics

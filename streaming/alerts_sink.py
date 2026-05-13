@@ -1,18 +1,14 @@
 """Alerts Sink — finflow.fraud.alerts → Gold Iceberg table.
-
 Consumes fraud alerts from the ``finflow.fraud.alerts`` Redpanda topic
 and writes them to the Gold Iceberg table (``finflow.gold.fraud_alerts``).
-
 This is the canonical data path for fraud alerts reaching the dashboard.
 DuckDB must read from the Gold Iceberg table, never directly from
 the Redpanda topic (AGENTS.md rule #5).
 """
-
 from __future__ import annotations
-
 import logging
 import os
-
+from streaming.metrics import attach_query_listener, mark_query_active, start_metrics_server
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 from pyspark.sql.types import (
@@ -24,9 +20,7 @@ from pyspark.sql.types import (
     StructType,
     TimestampType,
 )
-
 logger = logging.getLogger(__name__)
-
 # Schema for fraud alert payloads from the Redpanda topic.
 ALERT_SCHEMA = StructType([
     StructField("user_id", StringType(), nullable=False),
@@ -40,20 +34,15 @@ ALERT_SCHEMA = StructType([
     StructField("alert_type", StringType(), nullable=False),
     StructField("detected_at", TimestampType(), nullable=False),
 ])
-
-
 def _is_local_dev() -> bool:
     """Detect if we are running in local development mode (outside Docker)."""
     return os.environ.get("FINFLOW_ENV", "local") == "local"
-
-
 def create_spark_session() -> SparkSession:
     """Create a SparkSession configured for Iceberg + MinIO + Redpanda."""
     minio_endpoint = os.environ.get("MINIO_ENDPOINT", "http://minio:9000")
     minio_access_key = os.environ.get("MINIO_ACCESS_KEY", "minioadmin")
     minio_secret_key = os.environ.get("MINIO_SECRET_KEY", "minioadmin")
     local_dev = _is_local_dev()
-
     builder = (
         SparkSession.builder
         .appName("finflow-alerts-sink")
@@ -78,20 +67,18 @@ def create_spark_session() -> SparkSession:
         .config("spark.hadoop.fs.s3a.path.style.access", "true")
         .config("spark.hadoop.fs.s3a.impl", "org.apache.hadoop.fs.s3a.S3AFileSystem")
     )
-
     if not local_dev:
         builder = builder.config(
             "spark.sql.streaming.checkpointFileManagerClass",
             "io.minio.spark.checkpoint.S3BasedCheckpointFileManager",
         )
-
     return builder.getOrCreate()
-
-
 def run() -> None:
     """Run the alerts sink streaming job."""
     spark = create_spark_session()
     
+    # Start Prometheus metrics server on port 8003
+    start_metrics_server(port=8003, job_name="alerts-sink")
     # Ensure table exists in the correct bucket (AGENTS.md rule)
     table_name = "finflow.gold.fraud_alerts"
     location = "s3a://finflow-gold/fraud_alerts"
@@ -100,9 +87,7 @@ def run() -> None:
         spark.createDataFrame([], ALERT_SCHEMA).writeTo(table_name) \
             .tableProperty("location", location) \
             .create()
-
     bootstrap_servers = os.environ.get("REDPANDA_BROKERS", "redpanda:9092")
-
     # Read from Redpanda fraud alerts topic
     raw_alerts = (
         spark.readStream
@@ -113,7 +98,6 @@ def run() -> None:
         .option("failOnDataLoss", "false")
         .load()
     )
-
     # Parse JSON payloads
     parsed = (
         raw_alerts
@@ -122,9 +106,11 @@ def run() -> None:
         .select("data.*")
     )
 
+    # Attach Prometheus listener BEFORE query starts to capture onQueryStarted
+    attach_query_listener(spark, job_name="alerts-sink")
+
     # Write to Gold Iceberg table — NEVER raw Parquet
     checkpoint_location = "s3a://finflow-checkpoints/gold-fraud-alerts/"
-
     query = (
         parsed.writeStream
         .format("iceberg")
@@ -134,10 +120,11 @@ def run() -> None:
         .toTable("finflow.gold.fraud_alerts")
     )
 
+    # Mark active after query starts (belt-and-suspenders with onQueryStarted)
+    mark_query_active(job_name="alerts-sink")
+
     logger.info("Alerts sink started — awaiting termination")
     query.awaitTermination()
-
-
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     run()
