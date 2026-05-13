@@ -85,19 +85,9 @@ def create_spark_session() -> SparkSession:
     minio_secret_key = os.environ.get("MINIO_SECRET_KEY", "minioadmin")
     local_dev = _is_local_dev()
 
-    # Required Maven packages — downloaded automatically on first run.
-    # Versions are pinned to match PySpark 4.x (Scala 2.13).
-    packages = ",".join([
-        "org.apache.iceberg:iceberg-spark-runtime-4.0_2.13:1.10.1",
-        "org.apache.spark:spark-sql-kafka-0-10_2.13:4.1.1",
-        "org.apache.hadoop:hadoop-aws:3.4.1",
-        "org.apache.iceberg:iceberg-aws-bundle:1.10.1",
-    ])
-
     builder = (
         SparkSession.builder
         .appName("finflow-silver-writer")
-        .config("spark.jars.packages", packages)
         # Iceberg extensions
         .config(
             "spark.sql.extensions",

@@ -36,27 +36,9 @@ def create_spark_session() -> SparkSession:
     minio_access_key = os.environ.get("MINIO_ACCESS_KEY", "minioadmin")
     minio_secret_key = os.environ.get("MINIO_SECRET_KEY", "minioadmin")
 
-    # Auto-download required JARs.
-    #
-    # Two AWS SDKs are required simultaneously:
-    #   - SDK v1 (com.amazonaws)          → Hadoop S3A (fs.s3a.*)
-    #   - SDK v2 (software.amazon.awssdk) → Iceberg S3FileIO + dynamic
-    #                                        Class.forName() check in
-    #                                        ResolvingFileIO.ioClass()
-    #
-    # SDK v2 must be >= 2.21.0 for crossRegionAccessEnabled().
-    # Iceberg 1.8.1 targets SDK v2 2.28.x — use 2.28.3.
-    packages = ",".join([
-        "org.apache.iceberg:iceberg-spark-runtime-3.5_2.12:1.8.1",
-        "org.apache.hadoop:hadoop-aws:3.3.4",
-        "com.amazonaws:aws-java-sdk-bundle:1.12.262",   # SDK v1 for Hadoop S3A
-        "software.amazon.awssdk:bundle:2.28.3",          # SDK v2 for Iceberg S3FileIO
-    ])
-
     return (
         SparkSession.builder
         .appName("finflow-iceberg-maintenance")
-        .config("spark.jars.packages", packages)
         .config(
             "spark.sql.extensions",
             "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions",

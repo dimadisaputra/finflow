@@ -8,6 +8,9 @@
         spark-silver spark-fraud spark-alerts spark-maintenance \
         airflow-build airflow-init airflow-up airflow-down airflow-logs
 
+# ── Spark Configuration ──────────────────────────────────────────
+SPARK_PACKAGES="org.apache.iceberg:iceberg-spark-runtime-4.0_2.13:1.10.1,org.apache.spark:spark-sql-kafka-0-10_2.13:4.1.1,org.apache.hadoop:hadoop-aws:3.4.1,org.apache.iceberg:iceberg-aws-bundle:1.10.1"
+
 # ── Help ─────────────────────────────────────────────────────────
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | \
@@ -65,16 +68,24 @@ ingest-api: dev ## Alias for starting the ingestion API
 
 # ── Spark Streaming ──────────────────────────────────────────────
 spark-silver: ## Run Silver writer streaming job
-	spark-submit streaming/silver_writer.py
+	spark-submit \
+	  --packages $(SPARK_PACKAGES) \
+	  streaming/silver_writer.py
 
 spark-fraud: ## Run fraud detection streaming job
-	spark-submit streaming/fraud_detection.py
+	spark-submit \
+	  --packages $(SPARK_PACKAGES) \
+	  streaming/fraud_detection.py
 
 spark-alerts: ## Run alerts sink streaming job
-	spark-submit streaming/alerts_sink.py
+	spark-submit \
+	  --packages $(SPARK_PACKAGES) \
+	  streaming/alerts_sink.py
 
 spark-maintenance: ## Run Iceberg maintenance job
-	spark-submit jobs/iceberg_maintenance.py
+	spark-submit \
+	  --packages $(SPARK_PACKAGES) \
+	  jobs/iceberg_maintenance.py
 
 # ── dbt ──────────────────────────────────────────────────────────
 dbt-run: ## Run dbt transformations

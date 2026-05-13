@@ -54,17 +54,9 @@ def create_spark_session() -> SparkSession:
     minio_secret_key = os.environ.get("MINIO_SECRET_KEY", "minioadmin")
     local_dev = _is_local_dev()
 
-    packages = ",".join([
-        "org.apache.iceberg:iceberg-spark-runtime-4.0_2.13:1.10.1",
-        "org.apache.spark:spark-sql-kafka-0-10_2.13:4.1.1",
-        "org.apache.hadoop:hadoop-aws:3.4.1",
-        "org.apache.iceberg:iceberg-aws-bundle:1.10.1",
-    ])
-
     builder = (
         SparkSession.builder
         .appName("finflow-alerts-sink")
-        .config("spark.jars.packages", packages)
         .config(
             "spark.sql.extensions",
             "org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions",
